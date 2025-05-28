@@ -30,12 +30,12 @@
 
     button.toggle-map(@click="isVisibleMap = !isVisibleMap") {{ $t('toggleMap') }}
 
-    store-map(v-if="isVisibleMap")
+    countries-map(v-if="isVisibleMap")
 
 </template>
 
 <script setup>
-import StoreMap from '~/components/StoreMap';
+import CountriesMap from '~/components/CountriesMap';
 
 const COUNTRIES_BY_PAGE = 3;
 
