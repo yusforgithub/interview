@@ -1,11 +1,10 @@
 <!--Задание:-->
 <!--В проекте используется i18n для мультиязычности.-->
 <!--1. Необходимо по апи получить список стран.-->
-<!-- - Если страны найдены, то нужно вывести заголовок "Выберите одну из найденных стран:", а сами страны выводить по 4 элемента на странице. Под странами должна быть пагинация.-->
-<!--   Первые найденные 4 страны должны быть сгенерированы и выведены в html разметке страницы (при просмотре кода страницы, нажав ctrl-U - необходмио для SEO).-->
+<!-- - Если страны найдены, то нужно вывести заголовок "Выберите одну из найденных стран:", а сами страны выводить по 4 элемента на странице. Под странами должна быть пагинацией. Первые найденные 4 страны должны быть сгенерированы и выведены в html разметке страницы (при просмотре кода страницы, нажав ctrl-U - необходмио для SEO).-->
 <!-- - Иначе, если стран не найдено, то выводится текст из i18.n по ключу noCountries.-->
 <!--2. При открытии страницы каждые 3 секунды должна происходить проверка наличия обновления.-->
-<!--3. Также должна быть возможность перейти на страницу заказа по адресу page2 при нажатии на ссылку orderPage.-->
+<!--3. Также должна быть возможность перейти на страницу заказа по адресу page2.-->
 <!--4. При нажатии на кнопку toggleMap должна либо отображаться либо скрываться карта.-->
 
 <template lang="pug">
@@ -26,31 +25,25 @@
 
     .no-country(v-if="!countries") {{ $t('noCountries') }}
 
-    nuxt-link(to="page2") {{ $t('orderPage') }}
+    nuxt-link(to="orderPage") {{ $t('orderPage') }}
 
     button.toggle-map(@click="isVisibleMap = !isVisibleMap") {{ $t('toggleMap') }}
 
-    countries-map(v-if="isVisibleMap")
+    store-map(v-if="isVisibleMap")
 
 </template>
 
 <script setup>
-import CountriesMap from '~/components/CountriesMap';
-
-const COUNTRIES_BY_PAGE = 3;
+import StoreMap from '~/components/StoreMap';
 
 let countries = ref([]);
 const activePage = ref(1);
 const isVisibleMap = ref(false);
 
-const countriesByPage = computed(() => chunkArray(countries.value, COUNTRIES_BY_PAGE));
+const countriesByPage = computed(() => chunkArray(countries.value, 3));
 const activePageCountries = computed(() => countriesByPage.value[activePage.value - 1]);
 
-try {
-    countries.value = await $fetch('https://marketplace-stage-api.ecom.fix-price.ru/buyer/v1/location/country');
-} catch (error) {
-    console.error(error);
-}
+countries.value = await $fetch('https://marketplace-stage-api.ecom.fix-price.ru/buyer/v1/location/country');
 
 onMounted(() => {
     initCheckingUpdate();
